@@ -1,5 +1,5 @@
 {
-  "name": "Random project name generator server",
+  "name": "random-project-name-generator-server",
   "version": "1.0.0",
   "description": "The server for the random project name generator",
   "author": "Christoph Stach",
