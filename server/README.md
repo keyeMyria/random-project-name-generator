@@ -1,4 +1,4 @@
-# server
+# Random Project Name Generator Server
 
 ## Description
 
