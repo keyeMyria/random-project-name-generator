@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
 import { delay } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { delay } from 'rxjs/operators';
   templateUrl: './users-list.component.html',
   styleUrls: ['./users-list.component.scss']
 })
-export class UsersListComponent implements OnInit {
+export class UsersListComponent {
   users: any[];
   loading = true;
 
@@ -35,10 +35,6 @@ export class UsersListComponent implements OnInit {
         this.loading = loading;
         this.users = data.users;
       });
-  }
-
-
-  ngOnInit() {
   }
 
 }

@@ -1,1 +1,14 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'variables';
+@import '~bootstrap/scss/bootstrap';
+
+body {
+  position: relative;
+}
+
+.will-animate {
+  visibility: hidden;
+}
+
+section:last-child {
+  margin-bottom: 45px !important;
+}
