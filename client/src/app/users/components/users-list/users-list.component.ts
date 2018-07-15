@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import gql from 'graphql-tag';
 import { Apollo } from 'apollo-angular';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-users-list',
@@ -27,11 +28,9 @@ export class UsersListComponent implements OnInit {
 
     this.apollo.watchQuery<any>({query: usersQuery})
       .valueChanges
-      /*
-      . pipe(
-        delay(1000)
+      .pipe(
+        delay(5000)
       )
-      */
       .subscribe(({data, loading}) => {
         this.loading = loading;
         this.users = data.users;
