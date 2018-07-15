@@ -1,5 +1,5 @@
-import { UserViewModel } from '../view-models/user.view-model';
+import { UserDto } from '../dtos/user.dto';
 
 export interface FindAllResponse {
-  data: UserViewModel[]
+  data: UserDto[]
 }

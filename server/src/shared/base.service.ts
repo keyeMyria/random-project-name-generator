@@ -1,6 +1,7 @@
 import { Model } from 'mongoose';
+import { BaseModel } from './base.model';
 
-export abstract class BaseService<T> {
+export abstract class BaseService<T extends BaseModel> {
 
   protected model: Model<T>;
 

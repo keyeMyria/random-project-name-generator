@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from '../../services/users/users.service';
 import { RegisterRequest } from '../../requests/register.request';
 import { RegisterResponse } from '../../responses/register.response';
@@ -7,9 +7,8 @@ import { LoginRequest } from '../../requests/login.request';
 import { User, UserRole } from '../../models/user.model';
 import { EnumHelper } from '../../../shared/helpers/enum.helper';
 import { MapperService } from '../../../shared/services/mapper/mapper.service';
-import { UserViewModel } from '../../view-models/user.view-model';
+import { UserDto } from '../../dtos/user.dto';
 import { FindAllResponse } from '../../responses/find-all.response';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -20,7 +19,7 @@ export class UsersController {
   async register(@Body() registerRequest: RegisterRequest): Promise<RegisterResponse> {
     if (registerRequest.username && registerRequest.email && registerRequest.password) {
       const user: User = await this.usersService.register(registerRequest);
-      const userViewModel: UserViewModel = this.mapperService.map<User, UserViewModel>(user, UserViewModel);
+      const userViewModel: UserDto = this.mapperService.map<User, UserDto>(user, UserDto);
 
       return {
         data: userViewModel,
@@ -50,7 +49,7 @@ export class UsersController {
       email: 'christoph.stach@ŋmail.com',
       password: '123456',
       username: 'christophstach',
-      role: UserRole.Admin,
+      role: UserRole.SUPERADMIN,
       firstName: 'Christoph',
       lastName: 'Stach',
     });
@@ -65,10 +64,9 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
   async findAll(): Promise<FindAllResponse> {
     const users: User[] = await this.usersService.findAll();
-    const userViewModels: UserViewModel[] = users.map((user: User) => this.mapperService.map<User, UserViewModel>(user, UserViewModel));
+    const userViewModels: UserDto[] = users.map((user: User) => this.mapperService.map<User, UserDto>(user, UserDto));
 
     return {
       data: userViewModels,
@@ -79,33 +77,4 @@ export class UsersController {
   async test() {
     return EnumHelper.values(UserRole);
   }
-
-  /*
-    async create(@Body() user: UserInterface): Promise<User> {
-      return this.usersService.create(user);
-    }
-
-
-
-    @Get(':id')
-    async findOne(@Param('id') id: string): Promise<User> {
-      return this.usersService.findOne(id);
-    }
-
-    @Put()
-    async update() {
-
-    }
-
-    @Delete()
-    async delete() {
-
-    }
-
-    @Get('create-test')
-    async createTestUser() {
-
-      //return this.usersService.create(user);
-    }
-  */
 }

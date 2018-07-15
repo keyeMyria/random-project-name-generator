@@ -1,8 +1,9 @@
 import { BaseModel } from '../../shared/base.model';
 
 export enum UserRole {
-  Admin = 'Admin',
-  User = 'User'
+  SUPERADMIN = 'SUPERADMIN',
+  ADMIN = 'ADMIN',
+  USER = 'USER',
 }
 
 export class User extends BaseModel {

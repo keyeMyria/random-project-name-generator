@@ -1,7 +1,7 @@
-import { Logger, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RootController } from './controllers/root/root.controller';
-import { LoggerMiddleware } from './middlewares/logger/logger.middleware';
+import { RequestLoggerMiddleware } from './middlewares/logger/request-logger.middleware';
 import { configService } from '../shared/services/config/config.service';
 
 @Module({
@@ -11,15 +11,11 @@ import { configService } from '../shared/services/config/config.service';
   controllers: [
     RootController,
   ],
-  providers: [
-
-    Logger,
-  ],
 })
 export class CoreModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(LoggerMiddleware)
+      .apply(RequestLoggerMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

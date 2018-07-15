@@ -1,0 +1,29 @@
+<table border="1">
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>First name</th>
+    <th>Last name</th>
+  </tr>
+  </thead>
+  <tbody>
+  <ng-container *ngIf="loading">
+    <tr>
+      <td colspan="6">Loading...</td>
+    </tr>
+  </ng-container>
+  <ng-container *ngIf="!loading">
+    <tr *ngFor="let user of users">
+      <td>{{user.id}}</td>
+      <td>{{user.username}}</td>
+      <td>{{user.email}}</td>
+      <td>{{user.role | titlecase}}</td>
+      <td>{{user.firstName}}</td>
+      <td>{{user.lastName}}</td>
+    </tr>
+  </ng-container>
+  </tbody>
+</table>

@@ -9,6 +9,7 @@ import { JwtPayload } from '../../../auth/interfaces/jwt-payload.interface';
 import { AuthService } from '../../../auth/services/auth/auth.service';
 import { RegisterRequest } from '../../requests/register.request';
 import { LoginRequest } from '../../requests/login.request';
+import { UserDto } from '../../dtos/user.dto';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
