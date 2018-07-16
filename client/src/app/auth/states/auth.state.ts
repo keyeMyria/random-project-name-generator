@@ -5,6 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { LoginResponse } from '../../users/services/users.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Navigate } from '@ngxs/router-plugin';
+import { ToastrService } from 'ngx-toastr';
 
 export interface JwtPayload {
   email: string;
@@ -21,7 +22,11 @@ export interface AuthStateModel {
   name: 'auth'
 })
 export class AuthState {
-  constructor(private readonly authService: AuthService, private readonly jwtHelperService: JwtHelperService) {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtHelperService: JwtHelperService,
+    private readonly toastr: ToastrService
+  ) {
   }
 
   @Action(Login)
@@ -56,11 +61,14 @@ export class AuthState {
 
   @Action(LoginSuccess)
   loginSuccess(ctx: StateContext<AuthStateModel>, action: LoginSuccess) {
+    this.toastr.success('Login Successful');
+    console.log('Login Successful');
+
     return ctx.dispatch(new Navigate(['/']));
   }
 
   @Action(LoginFailed)
   loginFailed(ctx: StateContext<AuthStateModel>, action: LoginFailed) {
-    console.log(action.error);
+    setTimeout(() => this.toastr.error('Login Failed'));
   }
 }

@@ -28,9 +28,6 @@ export class UsersListComponent {
 
     this.apollo.watchQuery<any>({query: usersQuery})
       .valueChanges
-      .pipe(
-        delay(5000)
-      )
       .subscribe(({data, loading}) => {
         this.loading = loading;
         this.users = data.users;

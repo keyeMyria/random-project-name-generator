@@ -14,15 +14,27 @@ import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AuthModule } from '../auth/auth.module';
 import { Apollo, ApolloModule } from 'apollo-angular';
+import { setContext } from 'apollo-link-context';
+import { onError } from 'apollo-link-error';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { AuthStateModel } from '../auth/states/auth.state';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { GraphQLError } from 'graphql';
+import { HttpHeaders } from '@angular/common/http';
 
 
 @NgModule({
   imports: [
     SharedModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 10000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: false
+    }),
     NgxsModule.forRoot([]),
     NgxsStoragePluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
@@ -66,9 +78,45 @@ import { AuthStateModel } from '../auth/states/auth.state';
   ]
 })
 export class CoreModule {
-  constructor(apollo: Apollo, httpLink: HttpLink) {
+  constructor(apollo: Apollo, httpLink: HttpLink, store: Store, toastr: ToastrService) {
+    const http = httpLink.create({uri: 'http://localhost:3000/graphql'});
+
+    const auth = setContext((request, previousContext) => {
+      const jwt = (store.snapshot().auth as AuthStateModel).jwt;
+
+      if (!jwt) {
+        return {};
+      } else {
+        return {
+          headers: new HttpHeaders().set('Authorization', `Bearer ${jwt}`)
+        };
+      }
+    });
+
+    const error = onError(({graphQLErrors, networkError}) => {
+      if (graphQLErrors) {
+        graphQLErrors.map((err: GraphQLError) => {
+          const message = (err.message as any).error;
+
+          toastr.error(
+            message,
+            'GraphQL error'
+          );
+        });
+      }
+
+      if (networkError) {
+        toastr.error(
+          networkError.message,
+          'Network error'
+        );
+      }
+    });
+    
+    const link = auth.concat(error.concat(http));
+
     apollo.create({
-      link: httpLink.create({uri: 'http://localhost:3000/graphql'}),
+      link: link,
       cache: new InMemoryCache()
     });
   }
