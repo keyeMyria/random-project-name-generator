@@ -23,6 +23,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       return done(new UnauthorizedException(), false);
     }
 
-    done(null, user, payload.issuedAt);
+    done(null, user);
   }
 }

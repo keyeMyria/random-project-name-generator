@@ -1,7 +1,7 @@
 import { Model } from 'mongoose';
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../../models/user.model';
+import { User, UserRole } from '../../models/user.model';
 import { BaseService } from '../../../shared/base.service';
 import { compare, genSalt, hash } from 'bcryptjs';
 import { JwtPayload } from '../../../auth/interfaces/jwt-payload.interface';
@@ -19,13 +19,13 @@ export class UsersService extends BaseService<User> {
     this.model = userModel;
   }
 
-  async register({ username, email, password, firstName, lastName, role }: RegisterRequest): Promise<User> {
+  async register({ username, email, password, firstName, lastName }: RegisterRequest): Promise<User> {
     const newUser = new this.model();
     newUser.username = username;
     newUser.email = email;
     newUser.firstName = firstName;
     newUser.lastName = lastName;
-    newUser.role = role;
+    newUser.role = UserRole.USER;
 
     const salt = await genSalt(10);
     newUser.password = await hash(password, salt);
@@ -49,8 +49,7 @@ export class UsersService extends BaseService<User> {
     const payload: JwtPayload = {
       email: user.email,
       username: user.username,
-      role: user.role,
-      issuedAt: new Date(),
+      role: user.role
     };
 
     return await this.authService.signPayload(payload);

@@ -4,5 +4,4 @@ export interface JwtPayload {
   email: string;
   username: string;
   role: UserRole
-  issuedAt?: Date
 }

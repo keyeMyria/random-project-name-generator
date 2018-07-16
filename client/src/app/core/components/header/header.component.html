@@ -1,0 +1,36 @@
+<header class="header" data-scroll-spy="top">
+  <div class="top-bar container-fluid">
+    <div class="actions">
+      <ng-container *ngIf="isLogin$ | async">
+        <a class="btn" routerLink="/profile"><i class="fa fa-user-circle" aria-hidden="true"></i> {{username$ | async}}</a>
+        <a class="btn" (click)="onLogout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+      </ng-container>
+
+      <ng-container *ngIf="!(isLogin$ | async)">
+        <a class="btn" routerLink="/register"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a>
+        <a class="btn" routerLink="/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+      </ng-container>
+    </div><!--//actions-->
+    <app-social-nav></app-social-nav>
+  </div><!--//top-bar-->
+
+  <div class="intro">
+    <div class="container text-center">
+      <h1 class="name">
+
+        <input class="form-control form-control-lg" placeholder="Hit enter to generate random project name...">
+      </h1>
+      <div class="title">
+
+      </div>
+      <div class="desc">
+
+      </div>
+
+    </div><!--//container-->
+  </div><!--//intro-->
+
+  <!--<app-nav></app-nav>-->
+
+</header><!--//header-->
+
