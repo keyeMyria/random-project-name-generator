@@ -6,7 +6,7 @@ import { configService } from '../shared/services/config/config.service';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(configService.get('DATABASE_CONNECTION_STRING')),
+    MongooseModule.forRoot(configService.get('DATABASE_CONNECTION_STRING'), { useNewUrlParser: true }),
   ],
   controllers: [
     RootController,

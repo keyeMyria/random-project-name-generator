@@ -9,34 +9,94 @@ import { AppShellComponent } from './components/app-shell/app-shell.component';
 import { BackToTopComponent } from './components/back-to-top/back-to-top.component';
 import { SharedModule } from '../shared/shared.module';
 import { JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
-import { NgxsModule, Store } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AuthModule } from '../auth/auth.module';
-import { Apollo, ApolloModule } from 'apollo-angular';
-import { setContext } from 'apollo-link-context';
-import { onError } from 'apollo-link-error';
+import { APOLLO_OPTIONS, ApolloModule } from 'apollo-angular';
 import { HttpLink, HttpLinkModule } from 'apollo-angular-link-http';
-import { InMemoryCache } from 'apollo-cache-inmemory';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { AuthStateModel } from '../auth/states/auth.state';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { onError } from 'apollo-link-error';
 import { GraphQLError } from 'graphql';
-import { HttpHeaders } from '@angular/common/http';
-import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
+import { ApolloLink } from 'apollo-link';
+
+export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrService) {
+  const http = httpLink.create({uri: 'http://localhost:3000/graphql'});
+
+  const auth = new ApolloLink((operation, forward) => {
+    const jwt = store.snapshot().auth ? (store.snapshot().auth as AuthStateModel).jwt : null;
+
+    if (jwt) {
+      operation.setContext({
+        headers: {
+          Authorization: `Bearer ${jwt}`
+        }
+      });
+    }
+
+    return forward(operation);
+  });
+
+  const error = onError(({graphQLErrors, networkError}) => {
+    if (graphQLErrors) {
+      graphQLErrors.map((err: GraphQLError) => {
+        const message = (err.message as any).error;
+
+        toastr.error(
+          message,
+          'GraphQL error'
+        );
+      });
+    }
+
+    if (networkError) {
+      toastr.error(
+        networkError.message,
+        'Network error'
+      );
+    }
+  });
+
+  const link = ApolloLink.from([
+    auth,
+    error,
+    http
+  ]);
+
+  return {
+    link: link,
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        // fetchPolicy: 'network-only',
+        errorPolicy: 'all'
+      },
+      query: {
+        // fetchPolicy: 'network-only',
+        errorPolicy: 'all'
+      },
+      mutate: {
+        errorPolicy: 'all'
+      }
+    }
+  };
+}
 
 
 @NgModule({
   imports: [
-    SharedModule,
     BrowserAnimationsModule,
+    SharedModule,
+    AuthModule,
     ToastrModule.forRoot({
       timeOut: 10000,
       positionClass: 'toast-bottom-right',
       preventDuplicates: false
     }),
-    NgxsModule.forRoot([]),
     NgxsStoragePluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
@@ -45,7 +105,7 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
         useFactory: (store: Store) => {
-          const jwt = (store.snapshot().auth as AuthStateModel).jwt;
+          const jwt = store.snapshot().auth ? (store.snapshot().auth as AuthStateModel).jwt : null;
 
           return {
             tokenGetter: () => jwt,
@@ -57,12 +117,16 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
       }
     }),
     ApolloModule,
-    HttpLinkModule,
-    AuthModule
+    HttpLinkModule
   ],
   providers: [
     MailService,
-    ScrollSpyService
+    ScrollSpyService,
+    {
+      provide: APOLLO_OPTIONS,
+      useFactory: createApollo,
+      deps: [HttpLink, Store, ToastrService]
+    }
   ],
   declarations: [
     AppShellComponent,
@@ -80,46 +144,4 @@ import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
   ]
 })
 export class CoreModule {
-  constructor(apollo: Apollo, httpLink: HttpLink, store: Store, toastr: ToastrService) {
-    const http = httpLink.create({uri: 'http://localhost:3000/graphql'});
-
-    const auth = setContext((request, previousContext) => {
-      const jwt = (store.snapshot().auth as AuthStateModel).jwt;
-
-      if (!jwt) {
-        return {};
-      } else {
-        return {
-          headers: new HttpHeaders().set('Authorization', `Bearer ${jwt}`)
-        };
-      }
-    });
-
-    const error = onError(({graphQLErrors, networkError}) => {
-      if (graphQLErrors) {
-        graphQLErrors.map((err: GraphQLError) => {
-          const message = (err.message as any).error;
-
-          toastr.error(
-            message,
-            'GraphQL error'
-          );
-        });
-      }
-
-      if (networkError) {
-        toastr.error(
-          networkError.message,
-          'Network error'
-        );
-      }
-    });
-
-    const link = auth.concat(error.concat(http));
-
-    apollo.create({
-      link: link,
-      cache: new InMemoryCache()
-    });
-  }
 }

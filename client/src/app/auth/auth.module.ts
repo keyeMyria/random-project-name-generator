@@ -6,7 +6,7 @@ import { AuthState } from './states/auth.state';
 @NgModule({
   imports: [
     CommonModule,
-    NgxsModule.forFeature([
+    NgxsModule.forRoot([
       AuthState
     ])
   ],

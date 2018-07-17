@@ -6,6 +6,7 @@ import { LoginResponse } from '../../users/services/users.service';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Navigate } from '@ngxs/router-plugin';
 import { ToastrService } from 'ngx-toastr';
+import { Apollo } from 'apollo-angular';
 
 export interface JwtPayload {
   email: string;
@@ -25,14 +26,14 @@ export class AuthState implements NgxsOnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtHelperService: JwtHelperService,
-    private readonly toastr: ToastrService
+    private readonly toastr: ToastrService,
+    private readonly apollo: Apollo
   ) {
   }
 
   ngxsOnInit({patchState, getState}: StateContext<AuthStateModel>) {
     const state = getState();
 
-    console.log(this.jwtHelperService.getTokenExpirationDate(state.jwt));
     if (state.jwt && this.jwtHelperService.isTokenExpired(state.jwt)) {
       patchState({
         jwt: null,
@@ -56,24 +57,24 @@ export class AuthState implements NgxsOnInit {
   }
 
   @Action(Logout)
-  logout({patchState, dispatch}: StateContext<AuthStateModel>) {
-    patchState({
-      jwt: null,
-      jwtPayload: null
-    });
-
-    return dispatch(new Navigate(['/']));
+  async logout({patchState, dispatch}: StateContext<AuthStateModel>) {
+    dispatch(new Navigate(['/login']));
+    patchState({jwt: null, jwtPayload: null});
+    await this.apollo.getClient().resetStore();
+    this.toastr.success('Logout Successful');
   }
 
   @Action(LoginSuccess)
-  loginSuccess({dispatch}: StateContext<AuthStateModel>, action: LoginSuccess) {
+  async loginSuccess({dispatch}: StateContext<AuthStateModel>, action: LoginSuccess) {
+    dispatch(new Navigate(['/profile']));
+    await this.apollo.getClient().resetStore();
     this.toastr.success('Login Successful');
-
-    return dispatch(new Navigate(['/']));
   }
 
   @Action(LoginFailed)
-  loginFailed({}: StateContext<AuthStateModel>, action: LoginFailed) {
+  async loginFailed({patchState}: StateContext<AuthStateModel>, action: LoginFailed) {
+    patchState({jwt: null, jwtPayload: null});
+    await this.apollo.getClient().resetStore();
     this.toastr.error('Login Failed');
   }
 }

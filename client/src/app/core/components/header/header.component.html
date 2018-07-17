@@ -1,6 +1,7 @@
 <header class="header" data-scroll-spy="top">
   <div class="top-bar container-fluid">
     <div class="actions">
+      <a class="btn" routerLink="/"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
       <ng-container *ngIf="isLogin$ | async">
         <a class="btn" routerLink="/profile"><i class="fa fa-user-circle" aria-hidden="true"></i> {{username$ | async}}</a>
         <a class="btn" (click)="onLogout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
