@@ -24,6 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { GraphQLError } from 'graphql';
 import { HttpHeaders } from '@angular/common/http';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { HttpHeaders } from '@angular/common/http';
     NgxsStoragePluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
+    // NgxsLoggerPluginModule.forRoot(),
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
@@ -112,7 +114,7 @@ export class CoreModule {
         );
       }
     });
-    
+
     const link = auth.concat(error.concat(http));
 
     apollo.create({

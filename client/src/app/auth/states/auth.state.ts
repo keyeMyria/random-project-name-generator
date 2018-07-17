@@ -1,4 +1,4 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { Login, LoginFailed, LoginSuccess, Logout } from '../actions/auth.actions';
 import { AuthService } from '../services/auth.service';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -21,7 +21,7 @@ export interface AuthStateModel {
 @State<AuthStateModel>({
   name: 'auth'
 })
-export class AuthState {
+export class AuthState implements NgxsOnInit {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtHelperService: JwtHelperService,
@@ -29,46 +29,51 @@ export class AuthState {
   ) {
   }
 
-  @Action(Login)
-  login(ctx: StateContext<AuthStateModel>, action: Login) {
-    const state = ctx.getState();
+  ngxsOnInit({patchState, getState}: StateContext<AuthStateModel>) {
+    const state = getState();
 
+    console.log(this.jwtHelperService.getTokenExpirationDate(state.jwt));
+    if (state.jwt && this.jwtHelperService.isTokenExpired(state.jwt)) {
+      patchState({
+        jwt: null,
+        jwtPayload: null
+      });
+    }
+  }
+
+  @Action(Login)
+  login({patchState, dispatch}: StateContext<AuthStateModel>, action: Login) {
     return this.authService.login({email: action.email, password: action.password}).pipe(
       tap((response: LoginResponse) => {
-        ctx.setState({
-          ...state,
+        patchState({
           jwt: response.data.token,
           jwtPayload: this.jwtHelperService.decodeToken(response.data.token)
         });
       }),
-      map(() => ctx.dispatch(new LoginSuccess())),
-      catchError((error) => ctx.dispatch(new LoginFailed(error)))
+      map(() => dispatch(new LoginSuccess())),
+      catchError((error) => dispatch(new LoginFailed(error)))
     );
   }
 
   @Action(Logout)
-  logout(ctx: StateContext<AuthStateModel>) {
-    const state = ctx.getState();
-
-    ctx.setState({
-      ...state,
+  logout({patchState, dispatch}: StateContext<AuthStateModel>) {
+    patchState({
       jwt: null,
       jwtPayload: null
     });
 
-    return ctx.dispatch(new Navigate(['/']));
+    return dispatch(new Navigate(['/']));
   }
 
   @Action(LoginSuccess)
-  loginSuccess(ctx: StateContext<AuthStateModel>, action: LoginSuccess) {
+  loginSuccess({dispatch}: StateContext<AuthStateModel>, action: LoginSuccess) {
     this.toastr.success('Login Successful');
-    console.log('Login Successful');
 
-    return ctx.dispatch(new Navigate(['/']));
+    return dispatch(new Navigate(['/']));
   }
 
   @Action(LoginFailed)
-  loginFailed(ctx: StateContext<AuthStateModel>, action: LoginFailed) {
-    setTimeout(() => this.toastr.error('Login Failed'));
+  loginFailed({}: StateContext<AuthStateModel>, action: LoginFailed) {
+    this.toastr.error('Login Failed');
   }
 }
