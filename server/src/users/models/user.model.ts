@@ -10,7 +10,7 @@ export class User extends BaseModel {
   username: string;
   email: string;
   password: string;
-  role?: UserRole;
+  roles?: UserRole[];
   firstName?: string;
   lastName?: string;
 

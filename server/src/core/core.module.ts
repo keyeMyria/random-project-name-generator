@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RootController } from './controllers/root/root.controller';
-import { RequestLoggerMiddleware } from './middlewares/logger/request-logger.middleware';
+import { RequestLoggerMiddleware } from './middlewares/request-logger.middleware';
 import { configService } from '../shared/services/config/config.service';
 
 @Module({

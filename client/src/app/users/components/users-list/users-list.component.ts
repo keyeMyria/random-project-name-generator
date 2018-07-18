@@ -16,7 +16,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
         id
         username
         email
-        role
+        roles
         firstName
         lastName
       }

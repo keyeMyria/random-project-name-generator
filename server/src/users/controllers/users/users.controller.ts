@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { UsersService } from '../../services/users/users.service';
 import { RegisterRequest } from '../../requests/register.request';
 import { RegisterResponse } from '../../responses/register.response';
@@ -7,6 +7,9 @@ import { LoginRequest } from '../../requests/login.request';
 import { User } from '../../models/user.model';
 import { MapperService } from '../../../shared/services/mapper/mapper.service';
 import { UserDto } from '../../dtos/user.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../../../auth/guards/roles.guard';
+import { Roles } from '../../../auth/decorators/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -38,5 +41,12 @@ export class UsersController {
     } else {
       throw new BadRequestException();
     }
+  }
+
+  @Get()
+  // @UseGuards(AuthGuard('jwt'))
+  @Roles('admin', 'user')
+  async secret(): Promise<string>{
+    return Promise.resolve('Test');
   }
 }

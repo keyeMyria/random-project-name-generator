@@ -25,7 +25,7 @@ export class UsersService extends BaseService<User> {
     newUser.email = email;
     newUser.firstName = firstName;
     newUser.lastName = lastName;
-    newUser.role = UserRole.USER;
+    newUser.roles = [UserRole.USER];
 
     const salt = await genSalt(10);
     newUser.password = await hash(password, salt);
@@ -49,7 +49,7 @@ export class UsersService extends BaseService<User> {
     const payload: JwtPayload = {
       email: user.email,
       username: user.username,
-      role: user.role
+      roles: user.roles,
     };
 
     return await this.authService.signPayload(payload);
