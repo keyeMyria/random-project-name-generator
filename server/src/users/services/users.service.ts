@@ -1,13 +1,11 @@
 import { Model } from 'mongoose';
 import { BadRequestException, forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserRole } from '../../models/user.model';
-import { BaseService } from '../../../shared/base.service';
+import { User, UserRole } from '../models/user.model';
+import { BaseService } from '../../shared/base.service';
 import { compare, genSalt, hash } from 'bcryptjs';
-import { JwtPayload } from '../../../auth/interfaces/jwt-payload.interface';
-import { AuthService } from '../../../auth/services/auth/auth.service';
-import { RegisterRequest } from '../../requests/register.request';
-import { LoginRequest } from '../../requests/login.request';
+import { JwtPayload } from '../../auth/interfaces/jwt-payload.interface';
+import { AuthService } from '../../auth/services/auth.service';
 
 @Injectable()
 export class UsersService extends BaseService<User> {
@@ -19,7 +17,7 @@ export class UsersService extends BaseService<User> {
     this.model = userModel;
   }
 
-  async register({ username, email, password, firstName, lastName }: RegisterRequest): Promise<User> {
+  async register({ username, email, password, firstName, lastName }): Promise<User> {
     const newUser = new this.model();
     newUser.username = username;
     newUser.email = email;
@@ -33,7 +31,7 @@ export class UsersService extends BaseService<User> {
     return await this.create(newUser);
   }
 
-  async login({ email, password }: LoginRequest): Promise<string> {
+  async login({ email, password }): Promise<string> {
     const user = await this.findOne({ email });
 
     if (!user) {

@@ -1,15 +1,45 @@
 <header class="header" data-scroll-spy="top">
   <div class="top-bar container-fluid">
     <div class="actions">
-      <a class="btn" routerLink="/"><i class="fa fa-home" aria-hidden="true"></i> Home</a>
+      <a class="btn" routerLink="/users" title="Home">
+        <i class="fa fa-home text-center mr-0 d-none d-xs-none d-sm-none d-md-inline d-lg-inline d-xl-inline"
+           aria-hidden="true"></i>
+        <i class="fa fa-home text-center d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none"
+           aria-hidden="true"></i>
+        <span class="d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none">Home</span>
+      </a>
       <ng-container *ngIf="isLogin$ | async">
-        <a class="btn" routerLink="/profile"><i class="fa fa-user-circle" aria-hidden="true"></i> {{username$ | async}}</a>
-        <a class="btn" (click)="onLogout()"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+        <a class="btn" routerLink="/profile" title="Profile">
+          <i class="fa fa-user-circle text-center mr-0 d-none d-xs-none d-sm-none d-md-inline d-lg-inline d-xl-inline"
+             aria-hidden="true"></i>
+          <i class="fa fa-user-circle text-center d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none"
+             aria-hidden="true"></i>
+          <span class="d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none">{{username$ | async}}</span>
+        </a>
+        <a class="btn" (click)="onLogout()" title="Logout">
+          <i class="fa fa-sign-out text-center mr-0 d-none d-xs-none d-sm-none d-md-inline d-lg-inline d-xl-inline"
+             aria-hidden="true"></i>
+          <i class="fa fa-sign-out text-center d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none"
+             aria-hidden="true"></i>
+          <span class="d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none">Logout</span>
+        </a>
       </ng-container>
 
       <ng-container *ngIf="!(isLogin$ | async)">
-        <a class="btn" routerLink="/register"><i class="fa fa-user-plus" aria-hidden="true"></i> Register</a>
-        <a class="btn" routerLink="/login"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
+        <a class="btn" routerLink="/register" title="Register">
+          <i class="fa fa-user-plus text-center mr-0 d-none d-xs-none d-sm-none d-md-inline d-lg-inline d-xl-inline"
+             aria-hidden="true"></i>
+          <i class="fa fa-user-plus text-center d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none"
+             aria-hidden="true"></i>
+          <span class="d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none">Register</span>
+        </a>
+        <a class="btn" routerLink="/login" title="Login">
+          <i class="fa fa-sign-in text-center mr-0 d-none d-xs-none d-sm-none d-md-inline d-lg-inline d-xl-inline"
+             aria-hidden="true"></i>
+          <i class="fa fa-sign-in text-center d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none"
+             aria-hidden="true"></i>
+          <span class="d-xs-inline d-sm-inline d-md-none d-lg-none d-xl-none">Login</span>
+        </a>
       </ng-container>
     </div><!--//actions-->
     <app-social-nav></app-social-nav>

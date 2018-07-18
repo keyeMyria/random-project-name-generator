@@ -45,10 +45,10 @@ export class AuthState implements NgxsOnInit {
   @Action(Login)
   login({patchState, dispatch}: StateContext<AuthStateModel>, action: Login) {
     return this.authService.login({email: action.email, password: action.password}).pipe(
-      tap((response: LoginResponse) => {
+      tap((token) => {
         patchState({
-          jwt: response.data.token,
-          jwtPayload: this.jwtHelperService.decodeToken(response.data.token)
+          jwt: token,
+          jwtPayload: this.jwtHelperService.decodeToken(token)
         });
       }),
       map(() => dispatch(new LoginSuccess())),

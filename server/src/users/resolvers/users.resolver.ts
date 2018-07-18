@@ -1,5 +1,5 @@
 import { Query, Resolver } from '@nestjs/graphql';
-import { UsersService } from '../services/users/users.service';
+import { UsersService } from '../services/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { UseGuards } from '@nestjs/common';
 import { Roles } from '../../auth/decorators/roles.decorator';

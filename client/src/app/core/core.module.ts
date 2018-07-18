@@ -9,7 +9,7 @@ import { AppShellComponent } from './components/app-shell/app-shell.component';
 import { BackToTopComponent } from './components/back-to-top/back-to-top.component';
 import { SharedModule } from '../shared/shared.module';
 import { JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
-import { Store } from '@ngxs/store';
+import { NgxsModule, Store } from '@ngxs/store';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { AuthModule } from '../auth/auth.module';
@@ -97,6 +97,7 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
       positionClass: 'toast-bottom-right',
       preventDuplicates: false
     }),
+    NgxsModule.forRoot([]),
     NgxsStoragePluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),

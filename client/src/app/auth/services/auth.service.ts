@@ -1,23 +1,52 @@
 import { Injectable } from '@angular/core';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { LoginRequest, LoginResponse } from '../../users/services/users.service';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Apollo } from 'apollo-angular';
+import gql from 'graphql-tag';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private readonly jwtHelperService: JwtHelperService, private readonly httpClient: HttpClient) {
+  constructor(private readonly apollo: Apollo) {
   }
 
-  login({email, password}: LoginRequest): Observable<LoginResponse> {
-    const url = 'http://localhost:3000/users/login';
+  login({email, password}): Observable<string> {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation {
+          login(
+            email: "${email}"
+            password: "${password}"
+          )
+        }
+      `
+    }).pipe(
+      map(response => response.data.login)
+    );
+  }
 
-    return this.httpClient.post<LoginResponse>(url, {
-      email,
-      password
+  register({email, username, password, firstName, lastName}) {
+    return this.apollo.mutate({
+      mutation: gql`
+        mutation {
+          register(
+            email: "${email}"
+            username: "${username}"
+            password: "${password}"
+            firstName: "${firstName}"
+            lastName: "${lastName}"
+          ) {
+            id
+            username
+            email
+            roles
+            firstName
+            lastName
+          }
+        }
+      `
     });
   }
 }
