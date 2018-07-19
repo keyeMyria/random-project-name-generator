@@ -1,4 +1,4 @@
-import { Global, MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './services/auth.service';
 import { UsersModule } from '../users/users.module';
@@ -9,7 +9,6 @@ import { AttachUserToRequestMiddleware } from './middlewares/attach-user-to-requ
 import { configService } from '../shared/services/config/config.service';
 import { AuthResolver } from './resolvers/auth.resolver';
 
-@Global()
 @Module({
   imports: [
     JwtModule.register({

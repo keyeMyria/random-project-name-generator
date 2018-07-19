@@ -73,14 +73,14 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
     defaultOptions: {
       watchQuery: {
         // fetchPolicy: 'network-only',
-        errorPolicy: 'all'
+        errorPolicy: 'none'
       },
       query: {
         // fetchPolicy: 'network-only',
-        errorPolicy: 'all'
+        errorPolicy: 'none'
       },
       mutate: {
-        errorPolicy: 'all'
+        errorPolicy: 'none'
       }
     }
   };

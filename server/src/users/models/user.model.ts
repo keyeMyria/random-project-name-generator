@@ -13,8 +13,5 @@ export class User extends BaseModel {
   roles?: UserRole[];
   firstName?: string;
   lastName?: string;
-
-  get fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
-  }
+  enabled: boolean;
 }

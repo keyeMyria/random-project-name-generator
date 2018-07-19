@@ -9,4 +9,5 @@ export const UserMongooseSchema = new mongoose.Schema({
   roles: { type: [String], enum: EnumHelper.values(UserRole) },
   firstName: { type: String },
   lastName: { type: String },
+  enabled: { type: Boolean, defaults: false },
 });

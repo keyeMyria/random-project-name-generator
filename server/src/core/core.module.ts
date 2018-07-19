@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { RootController } from './controllers/root/root.controller';
 import { RequestLoggerMiddleware } from './middlewares/request-logger.middleware';
 import { configService } from '../shared/services/config/config.service';
+import { MailService } from './services/mail.service';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { configService } from '../shared/services/config/config.service';
   controllers: [
     RootController,
   ],
+  providers: [MailService],
 })
 export class CoreModule {
   configure(consumer: MiddlewareConsumer) {

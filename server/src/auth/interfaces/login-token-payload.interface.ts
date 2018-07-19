@@ -1,6 +1,6 @@
 import { UserRole } from '../../users/models/user.model';
 
-export interface JwtPayload {
+export interface LoginTokenPayload {
   email: string;
   username: string;
   roles: UserRole[];
