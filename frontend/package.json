@@ -1,15 +1,16 @@
 {
-  "name": "random-project-name-generator-server",
-  "version": "0.0.0",
+  "name": "random-project-name-generator-frontend",
+  "repository": "https://github.com/christophstach/random-project-name-generator/tree/master/frontend",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start:dev": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "fetch:types": "npx apollo-codegen introspect-schema http://localhost:3000/graphql --output ./src/app/types/schema.json",
-    "generate:types": "npx apollo-codegen generate **/*.ts --schema ./src/app/types/schema.json --target typescript --output ./src/app/types/operation-result-types.ts"
+    "fetch:types": "npx apollo-codegen introspect-schema http://localhost:3000/graphql --output src/app/types/schema.json",
+    "generate:types": "npx apollo-codegen generate **/*.ts --schema src/app/types/schema.json --target typescript --output src/app/types/operation-result-types.ts"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +34,7 @@
     "apollo-angular-link-http": "^1.1.1",
     "apollo-cache-inmemory": "^1.2.5",
     "apollo-client": "^2.3.5",
+    "apollo-codegen": "^0.20.2",
     "apollo-link-context": "^1.0.8",
     "apollo-link-error": "^1.1.0",
     "bootstrap": "^4.1.2",
