@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Inject, NgModule, PLATFORM_ID } from '@angular/core';
 import { MailService } from './services/mail.service';
 import { ScrollSpyService } from './services/scroll-spy.service';
 import { NavComponent } from './components/nav/nav.component';
@@ -21,6 +21,8 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { onError } from 'apollo-link-error';
 import { GraphQLError } from 'graphql';
 import { ApolloLink } from 'apollo-link';
+import { NgxsStoragePluginModule, STORAGE_ENGINE, StorageEngine } from '@ngxs/storage-plugin';
+import { isPlatformServer } from '@angular/common';
 
 export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrService) {
   const http = httpLink.create({uri: 'https://api-dot-random-project-name-generator.appspot.com/graphql'});
@@ -84,6 +86,61 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
   };
 }
 
+export class LocalStorageEngine implements StorageEngine {
+  private readonly isPlatformServer: boolean;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isPlatformServer = isPlatformServer(platformId);
+  }
+
+  get length(): number {
+    if (!this.isPlatformServer) {
+      return localStorage.length;
+    } else {
+      return null;
+    }
+  }
+
+  clear() {
+    if (!this.isPlatformServer) {
+      localStorage.clear();
+    }
+  }
+
+  getItem(key: any): any {
+    if (!this.isPlatformServer) {
+      return localStorage.getItem(key);
+    } else {
+      return null;
+    }
+  }
+
+  key(val: number) {
+    if (!this.isPlatformServer) {
+      return localStorage.key(val);
+    } else {
+      return null;
+    }
+  }
+
+  removeItem(key: any) {
+    if (!this.isPlatformServer) {
+      return localStorage.removeItem(key);
+    } else {
+      return null;
+    }
+  }
+
+  setItem(key: any, val: any) {
+    if (!this.isPlatformServer) {
+      localStorage.setItem(key, val);
+    } else {
+      return null;
+    }
+  }
+}
+
+
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -95,7 +152,7 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
       preventDuplicates: false
     }),
     NgxsModule.forRoot([]),
-    // NgxsStoragePluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot(),
     NgxsRouterPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot(),
     // NgxsLoggerPluginModule.forRoot(),
@@ -124,6 +181,10 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
       provide: APOLLO_OPTIONS,
       useFactory: createApollo,
       deps: [HttpLink, Store, ToastrService]
+    },
+    {
+      provide: STORAGE_ENGINE,
+      useClass: LocalStorageEngine
     }
   ],
   declarations: [
