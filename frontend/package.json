@@ -1,5 +1,6 @@
 {
   "name": "random-project-name-generator-frontend",
+  "description": "The frontend for the random project name generator",
   "repository": "https://github.com/christophstach/random-project-name-generator/tree/master/frontend",
   "version": "1.0.0",
   "scripts": {

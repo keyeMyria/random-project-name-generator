@@ -1,7 +1,7 @@
 {
   "name": "random-project-name-generator-backend",
   "version": "1.0.0",
-  "description": "The  for the random project name generator",
+  "description": "The backend for the random project name generator",
   "repository": "https://github.com/christophstach/random-project-name-generator/tree/master/backend",
   "author": "Christoph Stach",
   "license": "MIT",
