@@ -25,7 +25,7 @@ import { GraphQLError } from 'graphql';
 import { ApolloLink } from 'apollo-link';
 
 export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrService) {
-  const http = httpLink.create({uri: 'http://localhost:3000/graphql'});
+  const http = httpLink.create({uri: 'https://random-project-name-generator.appspot.com/graphql'});
 
   const auth = new ApolloLink((operation, forward) => {
     const jwt = store.snapshot().auth ? (store.snapshot().auth as AuthStateModel).jwt : null;
