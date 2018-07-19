@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-
 import { MailService } from './services/mail.service';
 import { ScrollSpyService } from './services/scroll-spy.service';
 import { NavComponent } from './components/nav/nav.component';
@@ -24,7 +23,7 @@ import { GraphQLError } from 'graphql';
 import { ApolloLink } from 'apollo-link';
 
 export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrService) {
-  const http = httpLink.create({uri: 'https://random-project-name-generator.appspot.com/graphql'});
+  const http = httpLink.create({uri: 'https://api-dot-random-project-name-generator.appspot.com/graphql'});
 
   const auth = new ApolloLink((operation, forward) => {
     const jwt = store.snapshot().auth ? (store.snapshot().auth as AuthStateModel).jwt : null;
@@ -85,7 +84,6 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
   };
 }
 
-
 @NgModule({
   imports: [
     BrowserAnimationsModule,
@@ -109,8 +107,8 @@ export function createApollo(httpLink: HttpLink, store: Store, toastr: ToastrSer
 
           return {
             tokenGetter: () => jwt,
-            whitelistedDomains: ['localhost:3000'],
-            blacklistedRoutes: ['localhost:3000/users/login/']
+            whitelistedDomains: ['api-dot-random-project-name-generator.appspot.com'],
+            blacklistedRoutes: []
           };
         },
         deps: [Store]
